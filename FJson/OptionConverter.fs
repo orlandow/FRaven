@@ -2,8 +2,7 @@
 
 open System
 open Microsoft.FSharp.Reflection
-open Newtonsoft.Json
-open Newtonsoft.Json.Converters
+open Raven.Imports.Newtonsoft.Json
 
 type OptionConverter() =
     inherit JsonConverter()

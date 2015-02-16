@@ -1,8 +1,8 @@
 ﻿module Serializer
 
-open Newtonsoft.Json
 open System
 open FJson
+open Raven.Imports.Newtonsoft.Json
 
 let opt = new OptionConverter()
 
