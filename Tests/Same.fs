@@ -8,3 +8,5 @@ let same (x:'a) =
     let result = deserialize<'a> str
     Assert.AreEqual(x, result)
 
+let serializes str obj =
+    Assert.AreEqual(str, serialize obj)

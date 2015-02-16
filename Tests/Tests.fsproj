@@ -56,6 +56,8 @@
     <Compile Include="UnionTests.fs" />
     <Compile Include="RecordTests.fs" />
     <Compile Include="AllMixed.fs" />
+    <Compile Include="ListTests.fs" />
+    <Compile Include="OptionTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
