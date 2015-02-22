@@ -16,6 +16,8 @@ type Record = {
     union: Union option
     tree: Tree option
     record: Record option
+    set: Enum Set option
+    map: Map<int,Tree> option
 }
 
 [<Test>]
@@ -25,9 +27,9 @@ let ``can serialize a recursive union``() =
 
 [<Test>]
 let ``can serialize a recursive record``() =
-    let t = { enum = None; union = None; tree = None; record = None }
+    let t = { enum = None; union = None; tree = None; record = None; set = None; map = None }
     same <| t
-    same <| { enum = None; union = None; tree = None; record = Some t }
+    same <| { t with record = Some t }
 
 [<Test>]
 let ``can serialize a very complex record`` () =
@@ -35,4 +37,6 @@ let ``can serialize a very complex record`` () =
         { enum = Some A
           union = Some <| Second (B, None)
           tree = Some <| Tree(3, Leaf, Tree(2, Leaf, Leaf))
-          record = None }
+          record = None
+          set = Some <| set [A;B]
+          map = Some <| Map.ofList [(1,Leaf);(2,Tree(2,Leaf,Leaf))]}
