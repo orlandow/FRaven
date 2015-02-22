@@ -60,6 +60,7 @@
     <Compile Include="OptionTests.fs" />
     <Compile Include="IdiomaticDuTests.fs" />
     <Compile Include="VeryComplexTests.fs" />
+    <Compile Include="PersistentStructuresTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

@@ -53,6 +53,7 @@
     <Compile Include="OptionConverter.fs" />
     <Compile Include="UnionConverter.fs" />
     <Compile Include="ListConverter.fs" />
+    <Compile Include="SetConverter.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
