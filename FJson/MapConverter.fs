@@ -19,13 +19,13 @@ type MapConverter() =
         t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Map<_,_>>
  
     override x.WriteJson(writer, value, serializer) =
-        let s = new JsonSerializer()
-        let cs = [ for c in serializer.Converters do
-                      if c.GetType() <> x.GetType() 
-                        then yield c ]
-        cs |> List.iter (s.Converters.Add)
+        let t = value.GetType()
+        let keyType = t.GetGenericArguments().[0]
+        let valueType = t.GetGenericArguments().[1]
+        let dictType = typedefof<Dictionary<_,_>>.MakeGenericType(keyType, valueType)
+        let d = Activator.CreateInstance(dictType, value)
 
-        s.Serialize(writer, value)
+        serializer.Serialize(writer, d)
  
     override x.ReadJson(reader, t, obj, serializer) = 
         let keyType = t.GetGenericArguments().[0]
