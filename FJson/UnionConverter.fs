@@ -19,8 +19,11 @@ type UnionConverter() =
         writer.WriteStartObject()
         writer.WritePropertyName("Case")
         writer.WriteValue(case.Name)
-        writer.WritePropertyName("Fields")
-        serializer.Serialize(writer, fields)
+
+        if fields |> Array.length > 0 then
+            writer.WritePropertyName("Fields")
+            serializer.Serialize(writer, fields)
+
         writer.WriteEndObject()
             
     override x.ReadJson(reader, t, existingValue, serializer) = 
@@ -59,4 +62,6 @@ type UnionConverter() =
                 |> Array.map (fun (info, field) ->
                     field.ToObject(info.PropertyType, serializer))
                 |> fun fields -> FSharpValue.MakeUnion(caseInfo, fields)
+            | [Case caseInfo] when caseInfo.GetFields().Length = 0 ->
+                FSharpValue.MakeUnion(caseInfo, [||])
             | _ -> failwith "unexpected property when reading union"
