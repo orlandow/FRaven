@@ -35,3 +35,14 @@ let ``it works with lists`` () =
     same <| []
     same <| [true; false]
     same <| [Some 5; None]
+
+[<Test>]
+let ``it works with arrays`` () =
+    same <| [|1..10|]
+    same <| [||]
+    same <| [|Some 5; None|]
+
+[<Test>]
+let ``it works with 2D arrays`` () =
+    same <| Array2D.init 10 10 (fun x y -> x + y)
+
