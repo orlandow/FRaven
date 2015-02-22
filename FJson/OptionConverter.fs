@@ -19,12 +19,14 @@ type OptionConverter() =
         serializer.Serialize(writer, value)
             
     override x.ReadJson(reader, t, existingValue, serializer) =
-        let innerType = t.GetGenericArguments().[0]
-        let innerType = 
-            if innerType.IsValueType then (typedefof<Nullable<_>>).MakeGenericType([|innerType|])
-            else innerType
-        let value = serializer.Deserialize(reader, innerType)
-        let cases = FSharpType.GetUnionCases(t)
-        if value = null then FSharpValue.MakeUnion(cases.[0], [||])
-        else FSharpValue.MakeUnion(cases.[1], [|value|])
+        if reader.TokenType = JsonToken.Null then None :> obj
+        else
+            let innerType = t.GetGenericArguments().[0]
+            let innerType = 
+                if innerType.IsValueType then (typedefof<Nullable<_>>).MakeGenericType([|innerType|])
+                else innerType
+            let value = serializer.Deserialize(reader, innerType)
+            let cases = FSharpType.GetUnionCases(t)
+            if value = null then FSharpValue.MakeUnion(cases.[0], [||])
+            else FSharpValue.MakeUnion(cases.[1], [|value|])
 
