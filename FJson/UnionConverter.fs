@@ -9,6 +9,12 @@ type UnionConverter() =
     inherit JsonConverter()
 
     let [<Literal>] CaseTag = "Case"
+    let [<Literal>] FieldsTag = "Fields"
+
+    let read (reader:JsonReader) =
+        if reader.Read() 
+            then () 
+            else failwith "unexpected end when reading union"
 
     override x.CanConvert(t) = 
         not(typeof<IEnumerable>.IsAssignableFrom(t)) && FSharpType.IsUnion(t)
@@ -20,9 +26,11 @@ type UnionConverter() =
         writer.WriteStartObject()
         writer.WritePropertyName(CaseTag)
         writer.WriteValue(case.Name)
-        fields |> Array.iteri (fun index value ->
-            writer.WritePropertyName(sprintf "Item%d" index)
-            serializer.Serialize(writer, value))
+        writer.WritePropertyName(FieldsTag)
+        serializer.Serialize(writer, fields)
         writer.WriteEndObject()
             
-    override x.ReadJson(reader, t, existingValue, serializer) = obj()
+    override x.ReadJson(reader, t, existingValue, serializer) = 
+        read reader // start object
+
+        obj()

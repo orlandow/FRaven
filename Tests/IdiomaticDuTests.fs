@@ -13,7 +13,7 @@ type Status =
 
 [<Test>]
 let ``simple unnamed dus are serialized idiomatically`` () =
-    Int 5 |> serializes "{\"Case\":\"Int\",\"Item0\":5}"
+    Int 5 |> serializes "{\"Case\":\"Int\",\"Fields\":[5]}"
 
 [<Test;Ignore>]
 let ``dus with named fields keep their names`` () =
