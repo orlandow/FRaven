@@ -6,8 +6,9 @@ open Raven.Imports.Newtonsoft.Json
 
 let opt = new OptionConverter()
 let un = new UnionConverter()
+let li = new ListConverter()
 
-let converters : JsonConverter array = [| opt; un |]
+let converters : JsonConverter array = [| opt; un; li |]
 
 let serialize x =
     JsonConvert.SerializeObject(x, converters)

@@ -50,8 +50,9 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Content Include="packages.config" />
-    <Compile Include="UnionConverter.fs" />
     <Compile Include="OptionConverter.fs" />
+    <Compile Include="UnionConverter.fs" />
+    <Compile Include="ListConverter.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
