@@ -8,8 +8,9 @@ let opt = new OptionConverter()
 let un = new UnionConverter()
 let li = new ListConverter()
 let set = new SetConverter()
+let map = new MapConverter()
 
-let converters : JsonConverter array = [| opt; un; li; set |]
+let converters : JsonConverter array = [| opt; un; li; set; map |]
 
 let serialize x =
     JsonConvert.SerializeObject(x, converters)

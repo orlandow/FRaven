@@ -54,6 +54,7 @@
     <Compile Include="UnionConverter.fs" />
     <Compile Include="ListConverter.fs" />
     <Compile Include="SetConverter.fs" />
+    <Compile Include="MapConverter.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
