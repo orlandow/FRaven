@@ -4,17 +4,10 @@ open System
 open Microsoft.FSharp.Reflection
 open Raven.Imports.Newtonsoft.Json
 open System.Collections
+open Raven.Imports.Newtonsoft.Json.Linq
 
 type UnionConverter() =
     inherit JsonConverter()
-
-    let [<Literal>] CaseTag = "Case"
-    let [<Literal>] FieldsTag = "Fields"
-
-    let read (reader:JsonReader) =
-        if reader.Read() 
-            then () 
-            else failwith "unexpected end when reading union"
 
     override x.CanConvert(t) = 
         not(typeof<IEnumerable>.IsAssignableFrom(t)) && FSharpType.IsUnion(t)
@@ -24,13 +17,44 @@ type UnionConverter() =
         let case, fields = FSharpValue.GetUnionFields(value, t)
 
         writer.WriteStartObject()
-        writer.WritePropertyName(CaseTag)
+        writer.WritePropertyName("Case")
         writer.WriteValue(case.Name)
-        writer.WritePropertyName(FieldsTag)
+        writer.WritePropertyName("Fields")
         serializer.Serialize(writer, fields)
         writer.WriteEndObject()
             
     override x.ReadJson(reader, t, existingValue, serializer) = 
-        read reader // start object
+        let consume() = 
+            if reader.Read() then () 
+            else failwith "unexpected end when reading union"
 
-        obj()
+        let (|Case|Fields|Other|) (name, value:JToken) =
+            match name, value.Type with
+            | "Case", JTokenType.String ->
+                FSharpType.GetUnionCases(t)
+                |> Array.tryFind (fun c -> c.Name = value.ToString())
+                |> Option.map (fun c -> Case c)
+                |> defaultArg <| Other
+            | "Fields", JTokenType.Array -> Fields (value :?> JArray)
+            | _ -> Other
+
+        consume() // start object
+
+        reader |> Seq.unfold (fun reader ->
+            match reader.TokenType with
+            | JsonToken.PropertyName ->
+                let name = reader.Value.ToString()
+                consume()
+                let token = JToken.ReadFrom(reader)
+                Some ((name, token), reader)
+            | _ -> failwith "expecting property name when reading union")
+        |> Seq.toList
+        |> function
+            | [Case caseInfo; Fields fields]
+            | [Fields fields; Case caseInfo] ->
+                Array.init (fields.Count) (fun i -> fields.[i])
+                |> Array.zip (caseInfo.GetFields())
+                |> Array.map (fun (info, field) ->
+                    field.ToObject(info.PropertyType, serializer))
+                |> fun fields -> FSharpValue.MakeUnion(caseInfo, fields)
+            | _ -> failwith "unexpected property when reading union"
