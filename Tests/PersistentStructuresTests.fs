@@ -15,3 +15,8 @@ let ``can serialize a set``() =
 [<Test>]
 let ``can serialize a map``() =
     same <| Map.ofList [("a",1);("b",2)]
+
+[<Test;Ignore>]
+let ``can serialize a map with complex keys`` () =
+    same <| Map.ofList [(A, A);(B, C)]
+    same <| Map.ofList [(set [1], A);(set [1;2], C)]
