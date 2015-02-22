@@ -46,7 +46,9 @@ type UnionConverter() =
                 let name = reader.Value.ToString()
                 consume()
                 let token = JToken.ReadFrom(reader)
+                consume()
                 Some ((name, token), reader)
+            | JsonToken.EndObject -> None
             | _ -> failwith "expecting property name when reading union")
         |> Seq.toList
         |> function
