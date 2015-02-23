@@ -46,3 +46,11 @@ let ``it works with arrays`` () =
 let ``it works with 2D arrays`` () =
     same <| Array2D.init 10 10 (fun x y -> x + y)
 
+type Id = System.Guid
+type Name = string
+[<Test>]
+let ``works with alias types`` () =
+    let name : Name = "asdf"
+    let id : Id = System.Guid.NewGuid()
+    same <| name
+    same <| id
