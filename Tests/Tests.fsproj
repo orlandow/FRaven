@@ -89,8 +89,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FJson\FJson.fsproj">
-      <Name>FJson</Name>
+    <ProjectReference Include="..\FRaven\FRaven.fsproj">
+      <Name>FRaven</Name>
       <Project>{2fa2de40-af35-4ca9-ab40-4a891d286986}</Project>
       <Private>True</Private>
     </ProjectReference>
